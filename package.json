@@ -1,0 +1,21 @@
+{
+  "engine": {
+    "node": "16"
+  },
+  "scripts": {
+    "build": "npx truffle compile",
+    "ganache": "npx ganache-cli --accounts=60"
+  },
+  "devDependencies": {
+    "cli-progress": "^3.10.0",
+    "ganache-cli": "^6.12.2",
+    "hardhat": "^2.8.3",
+    "solc-0.8": "npm:solc@^0.8.11"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.3.3",
+    "@openzeppelin/test-helpers": "^0.5.15",
+    "erc721a": "^2.2.0",
+    "markdown-table": "^3.0.2"
+  }
+}
