@@ -7,7 +7,7 @@
 
 The goal of this repository is to compare different ways of making an NFT contract: openzeppelin's [ERC721](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol) and [ERC721Enumerable](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/extensions/ERC721Enumerable.sol), [ERC721A](https://github.com/chiru-labs/ERC721A) and other personal implementations for mint with or without randomness...
 
-This comparison is done first by studying the **gas used for mint and exchange 1 to 10 NFTs** with these different contracts, but also by giving an opinion on the features offered. 
+This comparison is done first by studying the **gas used for mint 1 to 10 NFTs, exchange and burn** with these different contracts, but also by giving an opinion on the features offered. 
 
 *These opinion only engage the person in charge of this repository, but all people are invited to **share and discuss** about theirs by **creating issues**.*
 
@@ -23,7 +23,7 @@ This comparison is done first by studying the **gas used for mint and exchange 1
 |   Mint 5   |        180976        |         581829<br/>_(+221%)_         |     85465<br/>_(-53%)_      |       292604<br/>_(+62%)_       |           691922<br/>_(+282%)_            |
 |  Mint 10   |        314481        |        1131254<br/>_(+260%)_         |     99595<br/>_(-68%)_      |       542653<br/>_(+73%)_       |           1357540<br/>_(+332%)_           |
 | Transfer 1 |        48662         |          76036<br/>_(+56%)_          |     77924<br/>_(+60%)_      |              48671              |            77056<br/>_(+58%)_             |
-
+|   Burn 1   |        26635         |          44959<br/>_(+69%)_          |     70032<br/>_(+163%)_     |              26646              |            44632<br/>_(+68%)_             |
 
 
 

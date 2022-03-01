@@ -3,8 +3,13 @@ pragma solidity 0.8.12;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
-contract ERC721Enumerable_Incremental is ERC721, ERC721Enumerable {
+contract ERC721Enumerable_Incremental is
+    ERC721,
+    ERC721Enumerable,
+    ERC721Burnable
+{
     uint256 private _mintCounter = 0;
     uint256 constant MAX_SUPPLY = 10_000;
 

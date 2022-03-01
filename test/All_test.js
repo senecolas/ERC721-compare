@@ -46,7 +46,9 @@ contract("ALL TESTS", (accounts) => {
           : [tokenId];
 
         if (from !== ZERO_ADDRESS) {
-          usersTokens[from] = usersTokens[from].filter((id) => id !== tokenId);
+          usersTokens[from] = usersTokens[from].filter(
+            (id) => id.toString() !== tokenId.toString()
+          );
         }
       }
     });
@@ -129,6 +131,49 @@ contract("ALL TESTS", (accounts) => {
   };
 
   /**
+   * Burn a random token foreach network's users for the `artifact` deployed contract
+   * Update users tokens and add transaction's gas used to gasStats
+   * Show a progress bar in the console
+   */
+  const launchBurns = async (artifact, contractName) => {
+    const contract = await artifact.deployed();
+    assert(contract.address !== "", "Contract not deployed");
+
+    // Set progress bar
+    console.log(`\tWait while users burn "${contractName}" tokens...`);
+    const progressBar = new cliProgress.SingleBar(
+      {
+        format:
+          "\tBurn: [{bar}] {percentage}% | {value}/{total} users | ETA: {eta}s | Duration: {duration_formatted}",
+      },
+      cliProgress.Presets.shades_classic
+    );
+    progressBar.start(accounts.length - 1, 0);
+
+    // Each users burn a random token
+    for (let i = 1; i < accounts.length; i++) {
+      const user = accounts[i];
+      const usersTokens = usersTokensByContract[contractName][user];
+
+      // If the user still has a token
+      if (usersTokens && usersTokens.length) {
+        const tokenId =
+          usersTokens[Math.floor(Math.random() * usersTokens.length)];
+
+        const txData = await contract.burn(tokenId, {
+          from: user,
+        });
+        updateUsersTokens(txData, contractName); // Add ids to usersTokensByContract
+        gasStats.addGasUsed(contractName, `Burn 1`, txData);
+      }
+      // Progress
+      progressBar.increment();
+    }
+
+    progressBar.stop();
+  };
+
+  /**
    * ========================
    *          TESTS
    * ========================
@@ -143,6 +188,10 @@ contract("ALL TESTS", (accounts) => {
     accounts.length - 1
   } users transfer a random token to the first user for ERC721 (Incremental)`, async () => {
     await launchTransfers(ERC721_Incremental, "ERC721 (Incremental)");
+  });
+
+  it(`${accounts.length} users burn a random token for ERC721 (Incremental)`, async () => {
+    await launchBurns(ERC721_Incremental, "ERC721 (Incremental)");
   });
 
   // ERC721Enumerable (Incremental)
@@ -162,6 +211,13 @@ contract("ALL TESTS", (accounts) => {
     );
   });
 
+  it(`${accounts.length} users burn a random token for ERC721Enumerable (Incremental)`, async () => {
+    await launchBurns(
+      ERC721Enumerable_Incremental,
+      "ERC721Enumerable (Incremental)"
+    );
+  });
+
   // ERC721A (Incremental)
   it(`${accounts.length} users mint for ERC721A (Incremental)`, async () => {
     await launchMints(ERC721A_Incremental, "ERC721A (Incremental)");
@@ -173,6 +229,10 @@ contract("ALL TESTS", (accounts) => {
     await launchTransfers(ERC721A_Incremental, "ERC721A (Incremental)");
   });
 
+  it(`${accounts.length} users burn a random token for ERC721A (Incremental)`, async () => {
+    await launchBurns(ERC721A_Incremental, "ERC721A (Incremental)");
+  });
+
   // ERC721 (Random with hash)
   it(`${accounts.length} users mint for ERC721 (Random with hash)`, async () => {
     await launchMints(ERC721_RandomWithHash, "ERC721 (Random with hash)");
@@ -182,6 +242,10 @@ contract("ALL TESTS", (accounts) => {
     accounts.length - 1
   } users transfer a random token to the first user for ERC721 (Random with hash)`, async () => {
     await launchTransfers(ERC721_RandomWithHash, "ERC721 (Random with hash)");
+  });
+
+  it(`${accounts.length} users burn a random token for ERC721 (Random with hash)`, async () => {
+    await launchBurns(ERC721_RandomWithHash, "ERC721 (Random with hash)");
   });
 
   // ERC721 (Random with hash)
@@ -200,6 +264,15 @@ contract("ALL TESTS", (accounts) => {
       "ERC721Enumerable (Random with hash)"
     );
   });
+
+  it(`${accounts.length} users burn a random token for ERC721Enumerable (Random with hash)`, async () => {
+    await launchBurns(
+      ERC721Enumerable_RandomWithHash,
+      "ERC721Enumerable (Random with hash)"
+    );
+  });
+
+  // GAS STATS
   it(`END`, async () => {
     gasStats.consoleStats("ERC721 (Incremental)");
   });
