@@ -30,7 +30,7 @@ contract("ALL TESTS", (accounts) => {
   /**
    * Update `usersTokensByContract` with transaction's event logs
    */
-  const updateUsersTokens = (user, txData, contractName) => {
+  const updateUsersTokens = (txData, contractName) => {
     if (!usersTokensByContract[contractName]) {
       usersTokensByContract[contractName] = {};
     }
@@ -49,12 +49,17 @@ contract("ALL TESTS", (accounts) => {
     });
   };
 
-  const launchMints = async (artifact, name) => {
+  /**
+   * Mint foreach network's users for the `artifact` deployed contract
+   * Update users tokens and add transaction's gas used to gasStats
+   * Show a progress bar in the console
+   */
+  const launchMints = async (artifact, contractName) => {
     const contract = await artifact.deployed();
     assert(contract.address !== "", "Contract not deployed");
 
     // Set progress bar
-    console.log(`\tWait while users mint "${name}" tokens...`);
+    console.log(`\tWait while users mint "${contractName}" tokens...`);
     const progressBar = new cliProgress.SingleBar(
       {
         format:
@@ -70,8 +75,8 @@ contract("ALL TESTS", (accounts) => {
       const amount = 1 + (i % 10);
 
       const txData = await contract.mint(amount, { from: user });
-      gasStats.addGasUsed(name, `Mint ${amount}`, txData);
-      updateUsersTokens(user, txData, name); // Add ids to usersTokensByContract
+      updateUsersTokens(txData, contractName); // Add ids to usersTokensByContract
+      gasStats.addGasUsed(contractName, `Mint ${amount}`, txData);
 
       // Progress
       progressBar.increment();
@@ -80,12 +85,17 @@ contract("ALL TESTS", (accounts) => {
     progressBar.stop();
   };
 
-  const launchTransfers = async (artifact, name) => {
+  /**
+   * Transfer a random token to the first user foreach other network's users for the `artifact` deployed contract
+   * Update users tokens and add transaction's gas used to gasStats
+   * Show a progress bar in the console
+   */
+  const launchTransfers = async (artifact, contractName) => {
     const contract = await artifact.deployed();
     assert(contract.address !== "", "Contract not deployed");
 
     // Set progress bar
-    console.log(`\tWait while users mint "${name}" tokens...`);
+    console.log(`\tWait while users mint "${contractName}" tokens...`);
     const progressBar = new cliProgress.SingleBar(
       {
         format:
@@ -98,15 +108,15 @@ contract("ALL TESTS", (accounts) => {
     // Each users transfer a random token to the first user
     for (let i = 1; i < accounts.length; i++) {
       const user = accounts[i];
-      const usersTokens = usersTokensByContract[name][user];
+      const usersTokens = usersTokensByContract[contractName][user];
       const tokenId =
         usersTokens[Math.floor(Math.random() * usersTokens.length)];
 
       const txData = await contract.transferFrom(user, accounts[0], tokenId, {
         from: user,
       });
-      updateUsersTokens(user, txData, name); // Add ids to usersTokensByContract
-      gasStats.addGasUsed(name, `Transfer 1`, txData);
+      updateUsersTokens(txData, contractName); // Add ids to usersTokensByContract
+      gasStats.addGasUsed(contractName, `Transfer 1`, txData);
 
       // Progress
       progressBar.increment();
