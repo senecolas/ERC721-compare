@@ -5,17 +5,19 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract ERC721Enumerable_Incremental is ERC721, ERC721Enumerable {
-    uint256 private _tokenIdCounter = 0;
+    uint256 private _mintCounter = 0;
+    uint256 constant MAX_SUPPLY = 10_000;
 
     constructor() ERC721("MyToken", "MTK") {}
 
     function mint(uint256 amount) external {
-        uint256 tokenId = _tokenIdCounter;
+        require(totalSupply() + amount <= MAX_SUPPLY);
+        uint256 tokenId = _mintCounter;
         for (uint256 i = 0; i < amount; i++) {
             tokenId += 1;
             _safeMint(msg.sender, tokenId);
         }
-        _tokenIdCounter = tokenId;
+        _mintCounter = tokenId;
     }
 
     // The following functions are overrides required by Solidity.
