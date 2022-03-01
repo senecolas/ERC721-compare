@@ -7,6 +7,10 @@ const ERC721Enumerable_Incremental = artifacts.require(
   "ERC721Enumerable_Incremental"
 );
 const ERC721A_Incremental = artifacts.require("ERC721A_Incremental");
+const ERC721_RandomWithHash = artifacts.require("ERC721_RandomWithHash");
+const ERC721Enumerable_RandomWithHash = artifacts.require(
+  "ERC721Enumerable_RandomWithHash"
+);
 
 // Load utils
 const gasStats = require("../utils/gasStats");
@@ -83,10 +87,12 @@ contract("ALL TESTS", (accounts) => {
     );
     progressBar.start(accounts.length - 1, 0);
 
-    // Each users transfer their first token to the first user
+    // Each users transfer a random token to the first user
     for (let i = 1; i < accounts.length; i++) {
       const user = accounts[i];
-      const tokenId = usersTokensByContract[name][user][0];
+      const usersTokens = usersTokensByContract[name][user];
+      const tokenId =
+        usersTokens[Math.floor(Math.random() * usersTokens.length)];
 
       const txData = await contract.transferFrom(user, accounts[0], tokenId, {
         from: user,
@@ -106,14 +112,18 @@ contract("ALL TESTS", (accounts) => {
    * ========================
    */
 
+  // ERC721 (Incremental)
   it(`${accounts.length} users mint for ERC721 (Incremental)`, async () => {
     await launchMints(ERC721_Incremental, "ERC721 (Incremental)");
   });
 
-  it(`${accounts.length} transfer their first token to the first user for ERC721 (Incremental)`, async () => {
+  it(`${
+    accounts.length - 1
+  } users transfer a random token to the first user for ERC721 (Incremental)`, async () => {
     await launchTransfers(ERC721_Incremental, "ERC721 (Incremental)");
   });
 
+  // ERC721Enumerable (Incremental)
   it(`${accounts.length} users mint for ERC721Enumerable (Incremental)`, async () => {
     await launchMints(
       ERC721Enumerable_Incremental,
@@ -121,21 +131,53 @@ contract("ALL TESTS", (accounts) => {
     );
   });
 
-  it(`${accounts.length} transfer their first token to the first user for ERC721Enumerable (Incremental)`, async () => {
+  it(`${
+    accounts.length - 1
+  } users transfer a random token to the first user for ERC721Enumerable (Incremental)`, async () => {
     await launchTransfers(
       ERC721Enumerable_Incremental,
       "ERC721Enumerable (Incremental)"
     );
   });
 
+  // ERC721A (Incremental)
   it(`${accounts.length} users mint for ERC721A (Incremental)`, async () => {
     await launchMints(ERC721A_Incremental, "ERC721A (Incremental)");
   });
 
-  it(`${accounts.length} transfer their first token to the first user for ERC721A (Incremental)`, async () => {
+  it(`${
+    accounts.length - 1
+  } users transfer a random token to the first user for ERC721A (Incremental)`, async () => {
     await launchTransfers(ERC721A_Incremental, "ERC721A (Incremental)");
   });
 
+  // ERC721 (Random with hash)
+  it(`${accounts.length} users mint for ERC721 (Random with hash)`, async () => {
+    await launchMints(ERC721_RandomWithHash, "ERC721 (Random with hash)");
+  });
+
+  it(`${
+    accounts.length - 1
+  } users transfer a random token to the first user for ERC721 (Random with hash)`, async () => {
+    await launchTransfers(ERC721_RandomWithHash, "ERC721 (Random with hash)");
+  });
+
+  // ERC721 (Random with hash)
+  it(`${accounts.length} users mint for ERC721Enumerable (Random with hash)`, async () => {
+    await launchMints(
+      ERC721Enumerable_RandomWithHash,
+      "ERC721Enumerable (Random with hash)"
+    );
+  });
+
+  it(`${
+    accounts.length - 1
+  } users transfer a random token to the first user for ERC721Enumerable (Random with hash)`, async () => {
+    await launchTransfers(
+      ERC721Enumerable_RandomWithHash,
+      "ERC721Enumerable (Random with hash)"
+    );
+  });
   it(`END`, async () => {
     gasStats.consoleStats("ERC721 (Incremental)");
   });
