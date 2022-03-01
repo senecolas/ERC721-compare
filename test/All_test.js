@@ -21,6 +21,9 @@ contract("ALL TESTS", (accounts) => {
   // Array of tokensId identified by contract => users
   const usersTokensByContract = {};
 
+  // Array of each amount of mint to test
+  const MINT_AMOUNTS_ARRAY = [1, 2, 3, 4, 5, 10];
+
   /**
    * ========================
    *        FUNCTIONS
@@ -72,7 +75,7 @@ contract("ALL TESTS", (accounts) => {
     // Mint foreach users
     for (let i = 0; i < accounts.length; i++) {
       const user = accounts[i];
-      const amount = 1 + (i % 10);
+      const amount = MINT_AMOUNTS_ARRAY[i % MINT_AMOUNTS_ARRAY.length];
 
       const txData = await contract.mint(amount, { from: user });
       updateUsersTokens(txData, contractName); // Add ids to usersTokensByContract
