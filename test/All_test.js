@@ -16,7 +16,10 @@ const ERC721Enumerable_RandomWithHash = artifacts.require(
 const gasStats = require("../utils/gasStats");
 
 contract("ALL TESTS", (accounts) => {
-  const usersTokensByContract = [];
+  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+  // Array of tokensId identified by contract => users
+  const usersTokensByContract = {};
 
   /**
    * ========================
@@ -24,21 +27,26 @@ contract("ALL TESTS", (accounts) => {
    * ========================
    */
 
-  const addMintedToken = (user, txData, contractName) => {
-    const idMints = txData.logs.reduce((acc, curr) => {
-      if (curr.event === "Transfer") {
-        acc.push(curr.args.tokenId);
-      }
-      return acc;
-    }, []);
+  /**
+   * Update `usersTokensByContract` with transaction's event logs
+   */
+  const updateUsersTokens = (user, txData, contractName) => {
     if (!usersTokensByContract[contractName]) {
       usersTokensByContract[contractName] = {};
     }
-    usersTokensByContract[contractName][user] = usersTokensByContract[
-      contractName
-    ][user]
-      ? [...usersTokensByContract[contractName][user], ...idMints]
-      : idMints;
+    const usersTokens = usersTokensByContract[contractName];
+    txData.logs.map((log) => {
+      if (log.event === "Transfer") {
+        const { to, from, tokenId } = log.args;
+        usersTokens[to] = usersTokens[to]
+          ? [...usersTokens[to], tokenId]
+          : [tokenId];
+
+        if (from !== ZERO_ADDRESS) {
+          usersTokens[from] = usersTokens[from].filter((id) => id !== tokenId);
+        }
+      }
+    });
   };
 
   const launchMints = async (artifact, name) => {
@@ -63,7 +71,7 @@ contract("ALL TESTS", (accounts) => {
 
       const txData = await contract.mint(amount, { from: user });
       gasStats.addGasUsed(name, `Mint ${amount}`, txData);
-      addMintedToken(user, txData, name); // Add ids to usersTokensByContract
+      updateUsersTokens(user, txData, name); // Add ids to usersTokensByContract
 
       // Progress
       progressBar.increment();
@@ -97,6 +105,7 @@ contract("ALL TESTS", (accounts) => {
       const txData = await contract.transferFrom(user, accounts[0], tokenId, {
         from: user,
       });
+      updateUsersTokens(user, txData, name); // Add ids to usersTokensByContract
       gasStats.addGasUsed(name, `Transfer 1`, txData);
 
       // Progress
