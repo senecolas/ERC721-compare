@@ -3,6 +3,7 @@ const cliProgress = require("cli-progress");
 
 // Load artifacts
 const ERC721_Incremental = artifacts.require("ERC721_Incremental");
+const ERC721Votes_Incremental = artifacts.require("ERC721Votes_Incremental");
 const ERC721Enumerable_Incremental = artifacts.require(
   "ERC721Enumerable_Incremental"
 );
@@ -185,6 +186,7 @@ contract("Gas comparison", (accounts) => {
 
   [
     { artifact: ERC721_Incremental, name: "ERC721 (Incremental)" },
+    { artifact: ERC721Votes_Incremental, name: "ERC721Votes (Incremental)" },
     {
       artifact: ERC721Enumerable_Incremental,
       name: "ERC721Enumerable (Incremental)",

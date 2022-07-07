@@ -16,6 +16,7 @@ This comparison is done first by studying the **gas used for mint 1 to 10 NFTs, 
     - [ERC721 vs ERC721Enumerable _(Incremental)_](#erc721-vs-erc721enumerable-incremental)
     - [ERC721 vs ERC721A _(Incremental)_](#erc721-vs-erc721a-incremental)
     - [ERC721 _(Incremental)_ vs ERC721 _(Random with hash)_](#erc721-incremental-vs-erc721-random-with-hash)
+    - [ERC721 vs ERC721Votes _(Incremental)_](#erc721-vs-erc721votes-incremental)
 ## Gas comparison
 
 
@@ -43,17 +44,11 @@ This comparison is done first by studying the **gas used for mint 1 to 10 NFTs, 
 |      ERC721<br/>_(Random with hash)_      | 100011<br/>_(+30%)_  | 147609<br/>_(+46%)_  | 197557<br/>_(+55%)_  | 245154<br/>_(+59%)_  | 292604<br/>_(+62%)_  |  542653<br/>_(+73%)_  |       48671        |       26646        |
 | ERC721Enumerable<br/>_(Random with hash)_ | 158963<br/>_(+107%)_ | 292728<br/>_(+190%)_ | 425790<br/>_(+234%)_ | 558856<br/>_(+262%)_ | 691922<br/>_(+282%)_ | 1357540<br/>_(+332%)_ | 77056<br/>_(+58%)_ | 44632<br/>_(+68%)_ |
 
-
-
-<!-- Markdown style -->
-<style>
-table th:first-of-type {
-    width: 20%;
-}
-table th {
-    width: 10%;
-}
-</style>
+### ERC721 vs ERC721Votes _(Incremental)_
+|   ACTION    |       Mint 1        |       Mint 2        |       Mint 3        |       Mint 4        |       Mint 5        |       Mint 10       |    Transfer 1     |       Burn 1        |
+| :---------: | :-----------------: | :-----------------: | :-----------------: | :-----------------: | :-----------------: | :-----------------: | :---------------: | :-----------------: |
+|   ERC721    |        76672        |       100873        |       127574        |       154275        |       180976        |       314481        |       48662       |        26635        |
+| ERC721Votes | 122914<br/>_(+50%)_ | 150373<br/>_(+49%)_ | 190160<br/>_(+49%)_ | 229947<br/>_(+49%)_ | 269734<br/>_(+49%)_ | 468669<br/>_(+49%)_ | 49512<br/>_(+5%)_ | 59749<br/>_(+134%)_ |
 
 <!-- Markdown link & img dfn's -->
 [ethereum-image]: https://img.shields.io/badge/Ethereum-purple?logo=Ethereum&style=for-the-badge
