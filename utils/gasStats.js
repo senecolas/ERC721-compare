@@ -1,11 +1,11 @@
 // gasStats
 const gasStats = (module.exports = {
   gasUsed: [],
-  addGasUsed: (contract, action, data) => {
+  addGasUsed: (contract, action, gas) => {
     gasStats.gasUsed.push({
       contract,
       action,
-      gas: data.receipt.gasUsed,
+      gas: gas,
     });
   },
   getStats: () => {
